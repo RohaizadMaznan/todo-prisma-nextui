@@ -14,16 +14,16 @@ export default function AuthSessionButton({}: Props) {
     <div className="flex items-center gap-2">
       {session && session.user ? (
         <div className="flex items-center space-x-4">
-          <p>{session.user.email}</p>
+          <Link href={"/profile"}>
+            <p>{session.user.email}</p>
+          </Link>
           <Button as={Link} href="/api/auth/signout">
             Sign Out
           </Button>
         </div>
       ) : (
         <>
-          <Button onClick={() => signIn()}>
-            Sign In
-          </Button>
+          <Button onClick={() => signIn()}>Sign In</Button>
           <Button as={Link} href="/auth/signup">
             Sign Up
           </Button>

@@ -7,7 +7,10 @@ import { User } from "@prisma/client";
 
 export const authOptions: AuthOptions = {
   pages: {
-    signIn: "/auth/signin"
+    signIn: "/auth/signin",
+  },
+  session: {
+    strategy: "jwt",
   },
   providers: [
     CredentialsProvider({
@@ -40,6 +43,9 @@ export const authOptions: AuthOptions = {
         );
 
         if (!isPasswordCorrect) throw new Error("Password is not correct");
+
+        if (!user.emailVerified)
+          throw new Error("Please verify your email address");
 
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;

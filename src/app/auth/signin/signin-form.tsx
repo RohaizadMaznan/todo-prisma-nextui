@@ -103,7 +103,7 @@ export default function SigninForm(props: Props) {
         variant="solid"
         type="submit"
         color="primary"
-        disabled={isSubmitting}
+        isDisabled={isSubmitting}
         isLoading={isSubmitting}
       >
         {isSubmitting ? "Signing In..." : "Sign In"}

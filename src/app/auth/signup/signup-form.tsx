@@ -11,15 +11,16 @@ import { passwordStrength } from "check-password-strength";
 import PasswordStrength from "@/app/components/PasswordStrength";
 import { registerUser } from "@/lib/actions/authActions";
 import { toast } from "react-toastify";
+import { redirect, useRouter } from "next/navigation";
 
 type Props = {};
 
 const FormSchema = z
   .object({
-    firstName: z.string().min(6, {
+    firstName: z.string().min(1, {
       message: "This field is required",
     }),
-    lastName: z.string().min(6, {
+    lastName: z.string().min(1, {
       message: "This field is required",
     }),
     email: z
@@ -58,7 +59,7 @@ export default function SignupForm({}: Props) {
     register,
     control,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -79,12 +80,15 @@ export default function SignupForm({}: Props) {
     setPassStrength(passwordStrength(watch().password).id);
   }, [watch().password]);
 
+  const router = useRouter();
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     const { confirmPassword, accepted, ...user } = data;
 
     try {
       await registerUser(user);
       toast.success("User register successfully", { toastId: 1 });
+      router.push("/auth/signin");
     } catch (error) {
       toast.error("Something went wrong");
       console.error(error);
@@ -178,6 +182,8 @@ export default function SignupForm({}: Props) {
         variant="solid"
         type="submit"
         color="primary"
+        isLoading={isSubmitting}
+        isDisabled={!watch("accepted")}
       >
         Sign me up!
       </Button>
